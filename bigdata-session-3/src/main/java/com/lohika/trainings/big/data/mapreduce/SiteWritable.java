@@ -15,43 +15,43 @@ import java.util.List;
  */
 public class SiteWritable implements Writable {
 
-  private DoubleWritable sum;
-  private Text site;
+    private DoubleWritable sum;
+    private Text site;
 
-  public SiteWritable() {
-    this(new DoubleWritable(), new Text());
-  }
+    public SiteWritable() {
+        this(new DoubleWritable(), new Text());
+    }
 
-  public SiteWritable(DoubleWritable insum, Text site) {
-    this.sum = insum;
-    this.site = site;
-  }
+    public SiteWritable(DoubleWritable insum, Text site) {
+        this.sum = insum;
+        this.site = site;
+    }
 
-  public DoubleWritable getSum() {
-    return sum;
-  }
+    public DoubleWritable getSum() {
+        return sum;
+    }
 
-  public void setSum(DoubleWritable sum) {
-    this.sum = sum;
-  }
+    public void setSum(DoubleWritable sum) {
+        this.sum = sum;
+    }
 
-  public Text getSite() {
-    return site;
-  }
+    public Text getSite() {
+        return site;
+    }
 
-  public void setSite(Text site) {
-    this.site = site;
-  }
+    public void setSite(Text site) {
+        this.site = site;
+    }
 
-  @Override
-  public void write(DataOutput out) throws IOException {
-    sum.write(out);
-    site.write(out);
-  }
+    @Override
+    public void write(DataOutput out) throws IOException {
+        sum.write(out);
+        site.write(out);
+    }
 
-  @Override
-  public void readFields(DataInput in) throws IOException {
-    sum.readFields(in);
-    site.readFields(in);
-  }
+    @Override
+    public void readFields(DataInput in) throws IOException {
+        sum.readFields(in);
+        site.readFields(in);
+    }
 }

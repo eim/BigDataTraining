@@ -1,5 +1,7 @@
 package com.lohika.trainings.big.data.mapreduce;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.io.parquet.writable.BigDecimalWritable;
@@ -12,26 +14,29 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HomeWorkJSONJob {
 
-  public static class HWJSONMapper extends Mapper<Object, Text, IntWritable, SiteWritable> {
+  public static class HWJSONMapper
+    extends Mapper<Object, Text, IntWritable, SiteWritable>{
 
     private IntWritable userId = new IntWritable();
     private SiteWritable payment = new SiteWritable();
     private Pattern linePattern =
-        Pattern.compile("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} (\\d+) ([\\d.]+) (.+)");
+      Pattern.compile("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} (\\d+) ([\\d.]+) (.+)");
 
-    public void map(Object key, Text value, Context context)
-        throws IOException, InterruptedException {
+
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
       Matcher matcher = linePattern.matcher(value.toString());
 
       if (!matcher.find()) {
@@ -46,37 +51,33 @@ public class HomeWorkJSONJob {
     }
   }
 
-  public static class HWJSONReducer extends Reducer<IntWritable, SiteWritable, Text, NullWritable> {
+  public static class HWJSONReducer
+    extends Reducer<IntWritable, SiteWritable, Text, NullWritable> {
 
-
-    private SiteWritable paymentWritable = new SiteWritable();
-    private Text sites = new Text();
-    private StringBuilder sb = new StringBuilder();
-
-    public void reduce(IntWritable key, Iterable<SiteWritable> values, Context context)
-        throws IOException, InterruptedException {
+    public void reduce(IntWritable key, Iterable<SiteWritable> values, Context context) throws IOException, InterruptedException {
       BigDecimal sum = BigDecimal.ZERO;
-
+      JSONArray sitesArray = new JSONArray();
+      Set<String> uniqueSites = new HashSet<>();
+      String oneSite = null;
       for (SiteWritable payment : values) {
         sum = sum.add(BigDecimal.valueOf(payment.getSum().get()));
-        sb.append(new String(payment.getSite().getBytes()));
+        oneSite = new String(payment.getSite().getBytes());
+        if (!uniqueSites.contains(oneSite)) {
+          uniqueSites.add(oneSite);
+          sitesArray.put(oneSite);
+        }
       }
-
-      paymentWritable.setSum(new DoubleWritable(sum.doubleValue()));
-      paymentWritable.setSite(new Text(sb.toString()));
-
 
       JSONObject output = new JSONObject();
       try {
-        output.append("id", Integer.valueOf(key.get()));
-        output.append("total", Double.valueOf(paymentWritable.getSum().get()));
-        StringBuilder sb =
-            new StringBuilder("[").append(paymentWritable.getSite().toString()).append("]");
-        output.append("stores", sb.toString());
+        output.put("id", Integer.valueOf(key.get()));
+        output.put("total", Double.valueOf(sum.doubleValue()));
+        output.put("stores", sitesArray);
       } catch (JSONException e) {
         e.printStackTrace();
       }
-      context.write(new Text(output.toString()), null);
+
+      context.write(new Text(output.toString()),NullWritable.get());
     }
   }
 
@@ -87,12 +88,14 @@ public class HomeWorkJSONJob {
     job.setJarByClass(HomeWorkJSONJob.class);
 
     job.setMapperClass(HWJSONMapper.class);
-    job.setCombinerClass(HWJSONReducer.class);
+    //job.setCombinerClass(HWJSONReducer.class);
     job.setReducerClass(HWJSONReducer.class);
 
-    job.setOutputKeyClass(IntWritable.class);
-    job.setOutputValueClass(SiteWritable.class);
+    job.setMapOutputKeyClass(IntWritable.class);
+    job.setMapOutputValueClass(SiteWritable.class);
 
+    job.setOutputKeyClass(Text.class);
+    job.setOutputValueClass(NullWritable.class);
 
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));

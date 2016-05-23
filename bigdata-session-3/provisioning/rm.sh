@@ -2,5 +2,5 @@
 docker rm -f hadoop-master
 docker rm -f hadoop-slave-1
 docker rm -f hadoop-slave-2
-
+docker network rm hadoop
 
