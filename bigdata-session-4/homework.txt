@@ -1,0 +1,17 @@
+I. Pre-requirements
+
+Use Docker to create Voldemort cluster (at least 3 nodes)
+
+II. Facebook networks transition
+
+Implement a way to create (in HDFS as in example) and place network into Voldemort (read only store)
+
+IMPORTANT: It should be read only store
+
+Hints:
+
+- http://www.project-voldemort.com/voldemort/build-and-push.html
+- http://www.project-voldemort.com/voldemort/configuration.html
+- You can modify hadoop job
+- If it help, store hadoop result files in avro files before transition
+

@@ -1,0 +1,47 @@
+version: '2'
+
+services:
+  hadoop-master:
+    build: hadoop/.
+    container_name: hadoop-master
+    environment:
+      NAMENODE_HOSTNAME: '0.0.0.0'
+      HADOOP_NONE_ROLE: 'master'
+#    networks:
+#      test:
+#        ipv4_address: 172.16.238.10
+
+    ports:
+      - "8088:8088"
+      - "50070:50070"
+      - "9000:9000"
+
+  hadoop-slave-1:
+    build: hadoop/.
+    container_name: hadoop-slave-1
+    environment:
+      NAMENODE_HOSTNAME: '192.168.99.100'
+    ports:
+      - "50075"
+      - "8042"
+
+  hadoop-slave-2:
+    build: hadoop/.
+    container_name: hadoop-slave-2
+    environment:
+      NAMENODE_HOSTNAME: '192.168.99.100'
+    ports:
+      - "50075"
+      - "8042"
+
+#networks:
+#  hadoop:
+#    driver: bridge
+#    driver_opts:
+#      com.docker.network.enable_ipv6: "true"
+#      com.docker.network.bridge.enable_ip_masquerade: "false"
+#    ipam:
+#      driver: default
+#      config:
+#      - subnet: 172.16.238.0/24
+#        gateway: 172.16.238.1
