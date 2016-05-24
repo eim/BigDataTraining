@@ -8,11 +8,11 @@ WORKDIR /opt/riak
 
 RUN apt-get update
 RUN apt-get install -y wget vim telnet net-tools
-RUN wget https://github.com/voldemort/voldemort/archive/release-1.10.15-cutoff.tar.gz
-RUN dpkg -i riak_2.1.3-1_amd64.deb
+RUN cd /opt && wget https://github.com/voldemort/voldemort/archive/release-1.10.15-cutoff.tar.gz && tar xzvf release-1.10.15-cutoff.tar.gz 
+COPY cluster.xml /opt/voldemort-release-1.10.15-cutoff/config
 
 ADD bootstrap.sh /etc/bootstrap.sh
-RUN cp /etc/riak/riak.conf /etc/riak/riak.conf.template
+#RUN cp /etc/riak/riak.conf /etc/riak/riak.conf.template
 
 USER root
 
