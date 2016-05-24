@@ -4,15 +4,15 @@
     <zone>
       <zone-id>0</zone-id>
       <proximity-list>1</proximity-list>
-    <zone>
+    </zone>
     <zone>
       <zone-id>1</zone-id>
       <proximity-list>0</proximity-list>
-    <zone>
+    </zone>
      <zone>
       <zone-id>2</zone-id>
       <proximity-list>0</proximity-list>
-    <zone>
+    </zone>
     <server>
       <!-- The node id is a unique, sequential id beginning with 0 that identifies each server in the cluster-->
       <id>0</id>
@@ -44,4 +44,3 @@
       <zone-id>2</zone-id>
     </server>
   </cluster>
-
