@@ -8,7 +8,7 @@ WORKDIR /opt/riak
 
 RUN apt-get update
 RUN apt-get install -y wget vim telnet net-tools
-RUN wget http://s3.amazonaws.com/downloads.basho.com/riak/2.1/2.1.3/ubuntu/precise/riak_2.1.3-1_amd64.deb
+RUN wget https://github.com/voldemort/voldemort/archive/release-1.10.15-cutoff.tar.gz
 RUN dpkg -i riak_2.1.3-1_amd64.deb
 
 ADD bootstrap.sh /etc/bootstrap.sh
