@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker build -t riak riak
+docker build -t voldemort riak

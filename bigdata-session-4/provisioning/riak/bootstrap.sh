@@ -18,7 +18,7 @@ $HADOOP_PREFIX/sbin/start-dfs.sh
 $HADOOP_PREFIX/sbin/start-yarn.sh
 
 if [[ $1 == "-d" ]]; then
-  while true; do sleep 1000; done
+  while true; do sleep 1000; donee
 fi
 
 if [[ $1 == "-bash" ]]; then
@@ -26,15 +26,18 @@ if [[ $1 == "-bash" ]]; then
 fi
 
 
-sed s/127.0.0.1/$NODE_IP/ /etc/riak/riak.conf.template > /etc/riak/riak.conf
+export VOLDEMORT_HOME=/opt/voldemort-release-1.10.15-cutoff
 
-service riak start
-
-if [ -n $SEED_NODE_IP ]; then
-    riak-admin cluster join riak@$SEED_NODE_IP
-    riak-admin cluster plan
-    riak-admin cluster commit
+if [ "$NODE_IP" == "172.16.248.20" ]; then
+    echo "node.id=0" > /opt/voldemort-release-1.10.15-cutoff/config/server.properties
+elif [ "$NODE_IP" == "172.16.248.21" ]; then
+    echo "node.id=1" > /opt/voldemort-release-1.10.15-cutoff/config/server.properties
+else
+    echo "node.id=2" > /opt/voldemort-release-1.10.15-cutoff/config/server.properties
 fi
+
+cd ${VOLDEMORT_HOME}
+./bin/voldemort-server.sh .
 
 while true; do sleep 1000; done
 

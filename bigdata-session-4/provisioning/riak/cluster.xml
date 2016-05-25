@@ -16,7 +16,7 @@
     <server>
       <!-- The node id is a unique, sequential id beginning with 0 that identifies each server in the cluster-->
       <id>0</id>
-      <host>172.16.228.20</host>
+      <host>172.16.248.20</host>
       <http-port>8081</http-port>
       <socket-port>6666</socket-port>
       <admin-port>6667</admin-port>
@@ -26,7 +26,7 @@
     </server>
     <server>
       <id>1</id>
-      <host>172.16.228.21</host>
+      <host>172.16.248.21</host>
       <http-port>8081</http-port>
       <socket-port>6666</socket-port>
       <admin-port>6667</admin-port>
@@ -35,7 +35,7 @@
     </server>
      <server>
       <id>2</id>
-      <host>172.16.228.22</host>
+      <host>172.16.248.22</host>
       <http-port>8081</http-port>
       <socket-port>6666</socket-port>
       <admin-port>6667</admin-port>
