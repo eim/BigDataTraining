@@ -1,12 +1,5 @@
 package com.lohika.trainings.big.data.mapreduce;
 
-import com.basho.riak.client.api.RiakClient;
-import com.basho.riak.client.api.cap.Quorum;
-import com.basho.riak.client.api.commands.kv.StoreValue;
-import com.basho.riak.client.core.query.Location;
-import com.basho.riak.client.core.query.Namespace;
-import com.basho.riak.client.core.query.RiakObject;
-import com.basho.riak.client.core.util.BinaryValue;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -20,6 +13,15 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
+
+//import voldemort.client.ClientConfig;ClientConfig
+//import voldemort.client.SocketStoreClientFactory;
+//import voldemort.client.StoreClient;
+//import voldemort.client.StoreClientFactory;
+//import voldemort.serialization.DefaultSerializerFactory;
+//import voldemort.serialization.json.JsonReader;
+//import voldemort.utils.ByteArray;
+//import voldemort.versioning.Versioned;
 
 public class SimpleFacebookNetworkJob {
   public static class TokenizerMapper
@@ -38,22 +40,23 @@ public class SimpleFacebookNetworkJob {
 
   public static class FirstLevelFriendNetReducer
     extends Reducer<Text, Text, Text, Text> {
-
-    private RiakClient riakClient;
-    private final Namespace ns = new Namespace("default", "facebook");
+//
+//    String bootstrapUrl = "tcp://localhost:6666";
+//    StoreClientFactory factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrapUrl));
+//    private final Namespace ns = new Namespace("default", "facebook");
 
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
-      try {
-        riakClient = RiakClient.newClient("172.16.238.20");
-      } catch (UnknownHostException e) {
-        throw new RuntimeException(e);
-      }
+//      try {
+//        riakClient = RiakClient.newClient("172.16.238.20");
+//      } catch (UnknownHostException e) {
+//        throw new RuntimeException(e);
+//      }
     }
 
     @Override
     protected void cleanup(Context context) throws IOException, InterruptedException {
-        riakClient.shutdown();
+//        riakClient.shutdown();
     }
 
     @Override
@@ -65,21 +68,21 @@ public class SimpleFacebookNetworkJob {
         builder.append(friend.toString());
       }
 
-      Location location = new Location(ns, key.toString());
-
-      RiakObject riakObject = new RiakObject();
-      riakObject.setValue(BinaryValue.create(builder.toString()));
-
-      StoreValue store = new StoreValue.Builder(riakObject)
-        .withLocation(location)
-        .withOption(StoreValue.Option.W, new Quorum(3))
-        .build();
-
-      try {
-        riakClient.execute(store);
-      } catch (ExecutionException e) {
-        throw new RuntimeException(e);
-      }
+//      Location location = new Location(ns, key.toString());
+//
+//      RiakObject riakObject = new RiakObject();
+//      riakObject.setValue(BinaryValue.create(builder.toString()));
+//
+//      StoreValue store = new StoreValue.Builder(riakObject)
+//        .withLocation(location)
+//        .withOption(StoreValue.Option.W, new Quorum(3))
+//        .build();
+//
+//      try {
+//        riakClient.execute(store);
+//      } catch (ExecutionException e) {
+//        throw new RuntimeException(e);
+//      }
     }
   }
 

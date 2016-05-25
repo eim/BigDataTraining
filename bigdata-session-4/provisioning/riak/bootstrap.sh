@@ -17,9 +17,12 @@ service ssh start
 $HADOOP_PREFIX/sbin/start-dfs.sh
 $HADOOP_PREFIX/sbin/start-yarn.sh
 
-if [[ $1 == "-d" ]]; then
-  while true; do sleep 1000; donee
-fi
+
+# if [[ $1 == "-d" ]]; then
+#   while true; do
+#     sleep 1000;
+#   done
+# fi
 
 if [[ $1 == "-bash" ]]; then
   /bin/bash
@@ -37,8 +40,7 @@ else
 fi
 
 cd ${VOLDEMORT_HOME}
+echo "Going to start VOLDEMORT !!!"
 ./bin/voldemort-server.sh .
 
 while true; do sleep 1000; done
-
-

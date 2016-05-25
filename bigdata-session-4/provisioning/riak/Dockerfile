@@ -8,10 +8,10 @@ WORKDIR /opt/riak
 
 RUN apt-get update
 RUN apt-get install -y wget vim telnet net-tools
-RUN cd /opt && wget https://github.com/voldemort/voldemort/archive/release-1.10.15-cutoff.tar.gz && tar xzvf release-1.10.15-cutoff.tar.gz 
+RUN cd /opt && wget https://github.com/voldemort/voldemort/archive/release-1.10.15-cutoff.tar.gz && tar xzvf release-1.10.15-cutoff.tar.gz
 COPY cluster.xml /opt/voldemort-release-1.10.15-cutoff/config
 COPY stores.xml /opt/voldemort-release-1.10.15-cutoff/config
-COPY server.properties /opt/voldemort-release-1.10.15-cutoff/config 
+COPY server.properties /opt/voldemort-release-1.10.15-cutoff/config
 
 ADD bootstrap.sh /etc/bootstrap.sh
 #RUN cp /etc/riak/riak.conf /etc/riak/riak.conf.template
@@ -83,6 +83,8 @@ RUN chown root:root /etc/bootstrap.sh
 RUN chmod 700 /etc/bootstrap.sh
 
 ENV BOOTSTRAP /etc/bootstrap.sh
+ENV VOLDEMORT_HOME /opt/voldemort-release-1.10.15-cutoff
+ENV PATH $PATH:$VOLDEMORT_HOME/bin
 
 # workingaround docker.io build error
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
