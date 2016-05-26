@@ -6,14 +6,15 @@ FROM sequenceiq/pam:ubuntu-14.04
 
 WORKDIR /opt/riak
 
-ENV VOLVER 1.10.15
-
 RUN apt-get update
 RUN apt-get install -y wget vim telnet net-tools maven
+ENV VOLVER 1.10.16
+ENV VOLDEMORT_HOME /opt/voldemort-release-${VOLVER}-cutoff
+ENV PATH $PATH:$VOLDEMORT_HOME/bin
 RUN cd /opt && wget https://github.com/voldemort/voldemort/archive/release-${VOLVER}-cutoff.tar.gz && tar xzvf release-${VOLVER}-cutoff.tar.gz
-COPY cluster.xml /opt/voldemort-release-${VOLVER}-cutoff/config
-COPY stores.xml /opt/voldemort-release-${VOLVER}-cutoff/config
-COPY server.properties /opt/voldemort-release-${VOLVER}-cutoff/config
+COPY cluster.xml $VOLDEMORT_HOME/config
+COPY stores.xml $VOLDEMORT_HOME/config
+COPY server.properties $VOLDEMORT_HOME/config
 
 ADD bootstrap.sh /etc/bootstrap.sh
 #RUN cp /etc/riak/riak.conf /etc/riak/riak.conf.template
@@ -40,7 +41,7 @@ RUN mkdir -p /usr/java/default && \
 ENV JAVA_HOME /usr/java/default/
 ENV PATH $PATH:$JAVA_HOME/bin
 
-RUN cd /opt/voldemort-release-${VOLVER}-cutoff && ./gradlew -x test clean build && mvn install:install-file -Dfile=dist/voldemort-${VOLVER}.jar -DgroupId=voldemort -DartifactId=voldemort -Dversion=${VOLVER} -Dpackaging=jar
+RUN cd $VOLDEMORT_HOME && ./gradlew -x test clean build && mvn install:install-file -Dfile=dist/voldemort-${VOLVER}.jar -DgroupId=voldemort -DartifactId=voldemort -Dversion=${VOLVER} -Dpackaging=jar
 
 # hadoop
 RUN curl -s http://www.eu.apache.org/dist/hadoop/common/hadoop-2.7.1/hadoop-2.7.1.tar.gz | tar -xz -C /usr/local/
@@ -85,12 +86,6 @@ RUN chown root:root /etc/bootstrap.sh
 RUN chmod 700 /etc/bootstrap.sh
 
 ENV BOOTSTRAP /etc/bootstrap.sh
-ENV VOLDEMORT_HOME /opt/voldemort-release-${VOLVER}-cutoff
-ENV PATH $PATH:$VOLDEMORT_HOME/bin
-
-
-RUN wget http://central.maven.org/maven2/org/jdom/jdom2/2.0.6/jdom2-2.0.6.jar
-RUN mvn install:install-file -Dfile=./jdom2-2.0.6.jar -DgroupId=org.jdom -DartifactId=jdom2 -Dversion=2.0.6 -Dpackaging=jar
 
 # workingaround docker.io build error
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
