@@ -1,8 +1,5 @@
 package com.lohika.trainings.big.data.mapreduce;
 
-import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -14,13 +11,11 @@ import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import voldemort.client.ClientConfig;
-import voldemort.client.SocketStoreClientFactory;
-import voldemort.client.StoreClient;
-import voldemort.client.StoreClientFactory;
+//import voldemort.client.ClientConfig;
+//import voldemort.client.SocketStoreClientFactory;
+//import voldemort.client.StoreClient;
+//import voldemort.client.StoreClientFactory;
 
 public class SimpleFacebookNetworkJob {
   public static class TokenizerMapper
@@ -39,81 +34,32 @@ public class SimpleFacebookNetworkJob {
 
   public static class FirstLevelFriendNetReducer
     extends Reducer<Text, Text, Text, Text> {
-
-    String bootstrapUrl = "tcp://172.16.248.20:6666";
-    StoreClientFactory factory = null;//new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrapUrl));
-    StoreClient<String, GenericData.Array<GenericRecord>> client = null;
-    static final String valueSchemaJson = "{\n" +
-        "  \"type\": \"array\",\n" +
-        "  \"items\":{\n" +
-        "              \"name\":\"Child\",\n" +
-        "              \"type\":\"record\",\n" +
-        "              \"fields\":[\n" +
-        "                  {\"name\":\"id\", \"type\":\"int\"},\n" +
-        "                  {\"name\":\"name\", \"type\":\"string\"}\n" +
-        "              ]\n" +
-        "          }\n" +
-        "}";
-    static final String recordSchemaJson = "{\n" +
-          "              \"name\":\"Child\",\n" +
-          "              \"type\":\"record\",\n" +
-          "              \"fields\":[\n" +
-          "                  {\"name\":\"id\", \"type\":\"int\"},\n" +
-          "                  {\"name\":\"name\", \"type\":\"string\"}\n" +
-          "              ]\n" +
-          "          }";
-
-    Schema valueSchema = null;
-    Schema recordSchema = null;
-
-    @Override
-    protected void setup(Context context) throws IOException, InterruptedException {
-      factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrapUrl));
-      client = factory.getStoreClient("test");
-      valueSchema = new Schema.Parser().parse(valueSchemaJson);
-      recordSchema = new Schema.Parser().parse(recordSchemaJson);
-    }
-
-    @Override
-    protected void cleanup(Context context) throws IOException, InterruptedException {
-      factory.close();
-    }
+//
+//    String bootstrapUrl = "tcp://172.16.248.20:6666";
+//    static final String STORE_NAME = "test";
+//    StoreClientFactory factory = null;
+//    StoreClient<Integer, String> client = null;
+//
+//    @Override
+//    protected void setup(Context context) throws IOException, InterruptedException {
+//      factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrapUrl));
+//      client = factory.getStoreClient(STORE_NAME);
+//    }
+//
+//    @Override
+//    protected void cleanup(Context context) throws IOException, InterruptedException {
+//      factory.close();
+//    }
 
     @Override
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-
-      List<GenericRecord> genList = new ArrayList<GenericRecord>();
-      GenericRecord person1 = null;
-      int index = 1;
+      StringBuilder sb = new StringBuilder();
       for (Text friend: values) {
-        person1 = new GenericData.Record(recordSchema);
-        person1.put("id",Integer.valueOf(index++));
-        person1.put("name",friend.toString());
-        genList.add(person1);
+        if (sb.length() > 0) sb.append(" ");
+        sb.append(friend.toString());
       }
-
-      GenericData.Array<GenericRecord> value = new GenericData.Array<GenericRecord>(valueSchema,genList);
-
-
-      client.put("test",value);
-
-      client.get("test");
-
-//      Location location = new Location(ns, key.toString());
-//
-//      RiakObject riakObject = new RiakObject();
-//      riakObject.setValue(BinaryValue.create(builder.toString()));
-//
-//      StoreValue store = new StoreValue.Builder(riakObject)
-//        .withLocation(location)
-//        .withOption(StoreValue.Option.W, new Quorum(3))
-//        .build();
-//
-//      try {
-//        riakClient.execute(store);
-//      } catch (ExecutionException e) {
-//        throw new RuntimeException(e);
-//      }
+//      client.put(Integer.parseInt(key.toString()),sb.toString());
+      context.write(key,new Text(sb.toString()));
     }
   }
 

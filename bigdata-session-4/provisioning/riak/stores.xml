@@ -6,19 +6,16 @@
         <required-reads>1</required-reads>
         <preferred-writes>2</preferred-writes>
         <required-writes>1</required-writes>
-        <persistence>memory</persistence>
+        <persistence>read-only</persistence>
         <routing>client</routing>
         <routing-strategy>consistent-routing</routing-strategy>
         <key-serializer>
-            <type>string</type>
-            <schema-info>utf8</schema-info>
+            <type>avro-generic-versioned</type>
+            <schema-info version="0">"int"</schema-info>
         </key-serializer>
         <value-serializer>
-            <type>json</type>
-            <schema-info version="1">[{"id":"int32", "name":"string"}]</schema-info>
-            <compression>
-      	       <type>gzip</type>
-            </compression>
+            <type>avro-generic-versioned</type>
+            <schema-info version="0">"string"</schema-info>
         </value-serializer>
     </store>
 </stores>

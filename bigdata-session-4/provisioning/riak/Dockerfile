@@ -6,7 +6,7 @@ FROM sequenceiq/pam:ubuntu-14.04
 
 WORKDIR /opt/riak
 
-ENV VOLVER 1.10.15
+ENV VOLVER 1.10.16
 
 RUN apt-get update
 RUN apt-get install -y wget vim telnet net-tools maven
@@ -14,6 +14,7 @@ RUN cd /opt && wget https://github.com/voldemort/voldemort/archive/release-${VOL
 COPY cluster.xml /opt/voldemort-release-${VOLVER}-cutoff/config
 COPY stores.xml /opt/voldemort-release-${VOLVER}-cutoff/config
 COPY server.properties /opt/voldemort-release-${VOLVER}-cutoff/config
+COPY buildandpush.job /opt/voldemort-release-${VOLVER}-cutoff/config
 
 ADD bootstrap.sh /etc/bootstrap.sh
 #RUN cp /etc/riak/riak.conf /etc/riak/riak.conf.template
@@ -40,7 +41,7 @@ RUN mkdir -p /usr/java/default && \
 ENV JAVA_HOME /usr/java/default/
 ENV PATH $PATH:$JAVA_HOME/bin
 
-RUN cd /opt/voldemort-release-${VOLVER}-cutoff && ./gradlew -x test clean build && mvn install:install-file -Dfile=dist/voldemort-${VOLVER}.jar -DgroupId=voldemort -DartifactId=voldemort -Dversion=${VOLVER} -Dpackaging=jar
+RUN cd /opt/voldemort-release-${VOLVER}-cutoff && ./gradlew -x test clean build bnpJar && mvn install:install-file -Dfile=dist/voldemort-${VOLVER}.jar -DgroupId=voldemort -DartifactId=voldemort -Dversion=${VOLVER} -Dpackaging=jar && mvn install:install-file -Dfile=dist/voldemort-contrib-${VOLVER}.jar -DgroupId=voldemort -DartifactId=voldemort-contrib -Dversion=${VOLVER} -Dpackaging=jar
 
 # hadoop
 RUN curl -s http://www.eu.apache.org/dist/hadoop/common/hadoop-2.7.1/hadoop-2.7.1.tar.gz | tar -xz -C /usr/local/
@@ -86,7 +87,7 @@ RUN chmod 700 /etc/bootstrap.sh
 
 ENV BOOTSTRAP /etc/bootstrap.sh
 ENV VOLDEMORT_HOME /opt/voldemort-release-${VOLVER}-cutoff
-ENV PATH $PATH:$VOLDEMORT_HOME/bin
+ENV PATH $PATH:/usr/local/hadoop/bin:$VOLDEMORT_HOME/bin
 
 
 RUN wget http://central.maven.org/maven2/org/jdom/jdom2/2.0.6/jdom2-2.0.6.jar

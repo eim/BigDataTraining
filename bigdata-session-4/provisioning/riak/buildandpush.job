@@ -1,0 +1,14 @@
+type=VoldemortBuildandPush
+push.cluster=tcp://172.16.248.20:6666
+azkaban.should.proxy=true
+user.to.proxy=hadoop
+build.replication.factor=3
+build.type.avro=true
+avro.key.field=key
+avro.value.field=value
+push.store.name=test
+push.store.description="Testing avro build and push"
+push.store.owners=myemail@myworkplace.com
+build.input.path=/facebook_first_level.out/part-r-00000.avro
+build.output.dir=/tmp
+readonly.keytab.path=

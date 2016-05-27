@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: voldemort:voldemort-contrib:1.10.16">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/voldemort/voldemort-contrib/1.10.16/voldemort-contrib-1.10.16.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

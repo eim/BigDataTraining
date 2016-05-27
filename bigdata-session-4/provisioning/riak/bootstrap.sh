@@ -28,15 +28,24 @@ if [[ $1 == "-bash" ]]; then
   /bin/bash
 fi
 
-
-export VOLDEMORT_HOME=/opt/voldemort-release-1.10.15-cutoff
+export VOLDEMORT_HOME=/opt/voldemort-release-1.10.16-cutoff
+export SERVER_PROP=${VOLDEMORT_HOME}/config/server.properties
 
 if [ "$NODE_IP" == "172.16.248.20" ]; then
-    echo "node.id=0" > /opt/voldemort-release-1.10.15-cutoff/config/server.properties
+    grep "node.id=0" ${SERVER_PROP}
+    if [[ $? -eq 1 ]]; then
+        echo "node.id=0" >> ${SERVER_PROP}
+    fi
 elif [ "$NODE_IP" == "172.16.248.21" ]; then
-    echo "node.id=1" > /opt/voldemort-release-1.10.15-cutoff/config/server.properties
+    grep "node.id=1" ${SERVER_PROP}
+    if [[ $? -eq 1 ]]; then
+        echo "node.id=1" >> ${SERVER_PROP}
+    fi
 else
-    echo "node.id=2" > /opt/voldemort-release-1.10.15-cutoff/config/server.properties
+    grep "node.id=2" ${SERVER_PROP}
+    if [[ $? -eq 1 ]]; then
+        echo "node.id=2" >> ${SERVER_PROP}
+    fi
 fi
 
 cd ${VOLDEMORT_HOME}

@@ -7,7 +7,6 @@ docker run  -d \
             -e NODE_IP=172.16.248.20 \
             --ip=172.16.248.20 \
             --net=voldnetwork \
-            -P \
             voldemort
 
 docker run  -d \
@@ -17,7 +16,6 @@ docker run  -d \
             -e SEED_NODE_IP=172.16.248.20 \
             --ip=172.16.248.21 \
             --net=voldnetwork \
-            -P \
             voldemort
 
 
@@ -28,7 +26,6 @@ docker run  -d \
             -e SEED_NODE_IP=172.16.248.20 \
             --ip=172.16.248.22 \
             --net=voldnetwork \
-            -P \
             voldemort
 
 
