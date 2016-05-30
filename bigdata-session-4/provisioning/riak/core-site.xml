@@ -1,8 +1,4 @@
 <configuration>
-      <property>
-          <name>fs.defaultFS</name>
-          <value>hdfs://HOSTNAME:9000</value>
-      </property>
 
     <property>
         <name>hadoop.security.authentication</name>
@@ -14,5 +10,9 @@
         <value>true</value>
     </property>
 
-</configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://vold-1:9000</value>
+    </property>
 
+</configuration>

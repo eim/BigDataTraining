@@ -10,12 +10,21 @@
         <routing>client</routing>
         <routing-strategy>consistent-routing</routing-strategy>
         <key-serializer>
-            <type>avro-generic-versioned</type>
-            <schema-info version="0">"int"</schema-info>
+            <type>avro-generic</type>
+            <schema-info version="0">"string"</schema-info>
         </key-serializer>
         <value-serializer>
-            <type>avro-generic-versioned</type>
+            <type>avro-generic</type>
             <schema-info version="0">"string"</schema-info>
         </value-serializer>
+        <!--<routing-strategy>consistent-routing</routing-strategy>-->
+        <!--<key-serializer>-->
+            <!--<type>avro-generic-versioned</type>-->
+            <!--<schema-info version="0">"string"</schema-info>-->
+        <!--</key-serializer>-->
+        <!--<value-serializer>-->
+            <!--<type>avro-generic-versioned</type>-->
+            <!--<schema-info version="0">"string"</schema-info>-->
+        <!--</value-serializer>-->
     </store>
 </stores>

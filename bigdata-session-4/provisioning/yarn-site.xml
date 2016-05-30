@@ -6,12 +6,12 @@
 
     <property>
         <name>yarn.resourcemanager.hostname</name>
-        <value>RM_HOSTNAME</value>
+        <value>172.16.248.20</value>
     </property>
 
     <property>
         <name>yarn.nodemanager.hostname</name>
-        <value>NM_HOSTNAME</value>
+        <value>172.16.248.21</value>
     </property>
 
     <property>

@@ -6,7 +6,7 @@ FROM sequenceiq/pam:ubuntu-14.04
 
 WORKDIR /opt/riak
 
-ENV VOLVER 1.10.16
+ENV VOLVER 1.10.14
 
 RUN apt-get update
 RUN apt-get install -y wget vim telnet net-tools maven
@@ -15,6 +15,7 @@ COPY cluster.xml /opt/voldemort-release-${VOLVER}-cutoff/config
 COPY stores.xml /opt/voldemort-release-${VOLVER}-cutoff/config
 COPY server.properties /opt/voldemort-release-${VOLVER}-cutoff/config
 COPY buildandpush.job /opt/voldemort-release-${VOLVER}-cutoff/config
+COPY bnp.sh /opt/voldemort-release-${VOLVER}-cutoff/bin
 
 ADD bootstrap.sh /etc/bootstrap.sh
 #RUN cp /etc/riak/riak.conf /etc/riak/riak.conf.template
@@ -41,13 +42,20 @@ RUN mkdir -p /usr/java/default && \
 ENV JAVA_HOME /usr/java/default/
 ENV PATH $PATH:$JAVA_HOME/bin
 
-RUN cd /opt/voldemort-release-${VOLVER}-cutoff && ./gradlew -x test clean build bnpJar && mvn install:install-file -Dfile=dist/voldemort-${VOLVER}.jar -DgroupId=voldemort -DartifactId=voldemort -Dversion=${VOLVER} -Dpackaging=jar && mvn install:install-file -Dfile=dist/voldemort-contrib-${VOLVER}.jar -DgroupId=voldemort -DartifactId=voldemort-contrib -Dversion=${VOLVER} -Dpackaging=jar
+RUN cd /opt/voldemort-release-${VOLVER}-cutoff && ./gradlew -x test clean build contribJar bnpJar && mvn install:install-file -Dfile=dist/voldemort-${VOLVER}.jar -DgroupId=voldemort -DartifactId=voldemort -Dversion=${VOLVER} -Dpackaging=jar && mvn install:install-file -Dfile=dist/voldemort-contrib-${VOLVER}.jar -DgroupId=voldemort -DartifactId=voldemort-contrib -Dversion=${VOLVER} -Dpackaging=jar
 
 # hadoop
 RUN curl -s http://www.eu.apache.org/dist/hadoop/common/hadoop-2.7.1/hadoop-2.7.1.tar.gz | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.7.1 hadoop
 
 ENV HADOOP_PREFIX /usr/local/hadoop
+ENV HADOOP_COMMON_HOME /usr/local/hadoop
+ENV HADOOP_HDFS_HOME /usr/local/hadoop
+ENV HADOOP_MAPRED_HOME /usr/local/hadoop
+ENV HADOOP_YARN_HOME /usr/local/hadoop
+ENV HADOOP_CONF_DIR /usr/local/hadoop/etc/hadoop
+ENV YARN_CONF_DIR $HADOOP_PREFIX/etc/hadoop
+
 RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/java/default\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 #RUN . $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
@@ -56,6 +64,7 @@ RUN mkdir $HADOOP_PREFIX/input
 RUN cp $HADOOP_PREFIX/etc/hadoop/*.xml $HADOOP_PREFIX/input
 
 # pseudo distributed
+ADD slaves $HADOOP_PREFIX/etc/hadoop/slaves
 ADD core-site.xml.template $HADOOP_PREFIX/etc/hadoop/core-site.xml.template
 RUN sed s/HOSTNAME/localhost/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > /usr/local/hadoop/etc/hadoop/core-site.xml
 ADD hdfs-site.xml $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml
@@ -104,8 +113,8 @@ RUN echo "UsePAM no" >> /etc/ssh/sshd_config
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
 
-RUN service ssh start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root
-RUN service ssh start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
+#RUN service ssh start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root
+#RUN service ssh start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
 
 CMD ["/etc/bootstrap.sh", "-d"]
 

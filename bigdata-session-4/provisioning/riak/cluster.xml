@@ -1,18 +1,18 @@
 <cluster>
     <!-- The name is just to help users identify this cluster from the gui -->
     <name>mycluster</name>
-    <!--<zone>-->
-      <!--<zone-id>0</zone-id>-->
-      <!--<proximity-list>1</proximity-list>-->
-    <!--</zone>-->
-    <!--<zone>-->
-      <!--<zone-id>1</zone-id>-->
-      <!--<proximity-list>0</proximity-list>-->
-    <!--</zone>-->
-     <!--<zone>-->
-      <!--<zone-id>2</zone-id>-->
-      <!--<proximity-list>0</proximity-list>-->
-    <!--</zone>-->
+    <zone>
+      <zone-id>0</zone-id>
+      <proximity-list>1</proximity-list>
+    </zone>
+    <zone>
+      <zone-id>1</zone-id>
+      <proximity-list>0</proximity-list>
+    </zone>
+     <zone>
+      <zone-id>2</zone-id>
+      <proximity-list>0</proximity-list>
+    </zone>
     <server>
       <!-- The node id is a unique, sequential id beginning with 0 that identifies each server in the cluster-->
       <id>0</id>
@@ -22,25 +22,25 @@
       <admin-port>6667</admin-port>
       <!-- A list of data partitions assigned to this server -->
       <partitions>0,1,2</partitions>
-      <!--<zone-id>0</zone-id>-->
+      <zone-id>0</zone-id>
     </server>
     <server>
       <id>1</id>
       <host>172.16.248.21</host>
       <http-port>8081</http-port>
-      <socket-port>6668</socket-port>
+      <socket-port>6666</socket-port>
       <admin-port>6667</admin-port>
       <partitions>3,4,5</partitions>
-      <!--<zone-id>1</zone-id>-->
+      <zone-id>1</zone-id>
     </server>
      <server>
       <id>2</id>
       <host>172.16.248.22</host>
       <http-port>8081</http-port>
-      <socket-port>6669</socket-port>
+      <socket-port>6666</socket-port>
       <admin-port>6667</admin-port>
       <!-- A list of data partitions assigned to this server -->
       <partitions>6,7,8</partitions>
-      <!--<zone-id>2</zone-id>-->
+      <zone-id>2</zone-id>
     </server>
   </cluster>

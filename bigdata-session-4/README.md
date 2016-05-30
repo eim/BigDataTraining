@@ -21,5 +21,23 @@ III. Restart containers:
 IV. Home work
 
     Located in ./homework.txt
+-------------------------------------------------------
+1) In server.properties
+readonly.hadoop.config.path=
+readonly.keytab.path=
 
+2) In core-site.xml
+    <property>
+        <name>hadoop.security.authentication</name>
+        <value>simple</value> <!-- A value of "simple" would disable security. -->
+    </property>
+
+    <property>
+        <name>hadoop.security.authorization</name>
+        <value>true</value>
+    </property>
+
+3) hdfs-site.xml and core-site.xml copy into /usr/local/hadoop/etc/hadoop
+
+4)
 
